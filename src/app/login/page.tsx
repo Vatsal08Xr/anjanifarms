@@ -37,9 +37,9 @@ export default function LoginPage() {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       router.push("/cart");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Google sign in error", error);
-      alert("Failed to sign in with Google. Please try again.");
+      alert(`Google Sign-In Error: ${error?.code || error?.message || "Unknown error"}`);
     }
   };
 
