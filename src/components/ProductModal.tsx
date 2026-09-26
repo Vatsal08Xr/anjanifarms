@@ -6,6 +6,7 @@ import { X, CheckCircle2, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { type Product } from "@/data/products";
 import Link from "next/link";
+import { useCart } from "@/context/CartContext";
 
 interface ProductModalProps {
   product: Product | null;
@@ -16,6 +17,7 @@ interface ProductModalProps {
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { addToCart } = useCart();
 
   // Reset state when modal opens
   useEffect(() => {
@@ -182,7 +184,13 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                     <p className="text-sm text-charcoal-light font-medium">Total</p>
                     <p className="font-serif text-xl font-semibold text-forest">{product.price}</p>
                   </div>
-                  <button className="bg-forest text-offwhite px-8 md:px-12 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors">
+                  <button 
+                    onClick={() => {
+                      addToCart(product);
+                      onClose();
+                    }}
+                    className="bg-forest text-offwhite px-8 md:px-12 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors"
+                  >
                     Add to Cart
                   </button>
                 </div>

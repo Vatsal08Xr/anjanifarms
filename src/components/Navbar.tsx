@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ShoppingBag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/context/CartContext";
 
 const links = [
   { name: "Home", href: "/" },
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,26 +75,45 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-4">
             <Link
-              href="/shop"
+              href="/cart"
               className={cn(
-                "flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium transition-colors",
+                "relative flex items-center justify-center w-10 h-10 rounded-full transition-colors",
                 useLightText 
-                  ? "bg-offwhite text-forest hover:bg-offwhite/90" 
-                  : "bg-forest text-offwhite hover:bg-forest-light"
+                  ? "bg-offwhite/10 hover:bg-offwhite/20 text-offwhite" 
+                  : "bg-forest/5 hover:bg-forest/10 text-forest"
               )}
+              aria-label="Cart"
             >
-              Order Now
+              <ShoppingBag size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-earthy text-offwhite text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </Link>
           </div>
 
-          {/* Mobile Toggle */}
-          <button
-            className={cn("md:hidden z-50 transition-colors", useLightText ? "text-offwhite" : "text-forest")}
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+          {/* Mobile Toggle & Cart */}
+          <div className="md:hidden flex items-center gap-4 z-50">
+            <Link
+              href="/cart"
+              className={cn("relative transition-colors", useLightText ? "text-offwhite" : "text-forest")}
+            >
+              <ShoppingBag size={24} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-earthy text-offwhite text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            <button
+              className={cn("transition-colors", useLightText ? "text-offwhite" : "text-forest")}
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -119,12 +140,6 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
-              <Link
-                href="/shop"
-                className="mt-8 flex items-center gap-2 bg-forest text-offwhite px-8 py-3 rounded-full text-lg hover:bg-forest-light transition-colors"
-              >
-                Order Now
-              </Link>
             </nav>
           </motion.div>
         )}

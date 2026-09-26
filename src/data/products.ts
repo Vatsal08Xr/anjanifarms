@@ -14,7 +14,7 @@ export type Product = {
 
 export const products: Product[] = [
   {
-    id: "mangoes",
+    id: "mangoes-alphonso",
     name: "Premium Alphonso Mangoes",
     shortDescription: "Sun-ripened, hand-picked seasonal Alphonso mangoes.",
     description: "Our Alphonso mangoes are carefully cultivated using natural methods. Harvested at the perfect time to ensure optimal sweetness and flavor.",
@@ -31,13 +31,47 @@ export const products: Product[] = [
     growingMethods: "Hand-pollinated and grown in nutrient-rich laterite soil with minimal organic intervention to preserve its natural sweetness."
   },
   {
+    id: "mangoes-mallika",
+    name: "Mallika Mangoes",
+    shortDescription: "Exceptionally sweet, fiberless Mallika mangoes.",
+    description: "A premium cross between Neelum and Dasheri, our Mallika mangoes offer a honey-like sweetness and completely fiberless flesh. Perfect for desserts and eating fresh.",
+    price: "₹950",
+    availableSizes: ["1 Dozen", "2 Dozen"],
+    image: "/images/mallika_mango.jpg",
+    category: "Fruits",
+    available: true,
+    healthBenefits: [
+      "High in dietary fiber and essential vitamins",
+      "Excellent for skin health and immunity",
+      "Provides sustained natural energy"
+    ],
+    growingMethods: "Grown using sustainable farming practices, these mangoes are left to mature naturally on the tree before being carefully hand-harvested."
+  },
+  {
+    id: "mangoes-himayath",
+    name: "Himayath (Imam Pasand) Mangoes",
+    shortDescription: "The 'King of Mangoes' in South India, large and incredibly sweet.",
+    description: "Known for its exceptionally large size and distinct sweet-tangy flavor, the Imam Pasand is a rare delicacy. Its thin skin hides a rich, buttery, fiberless interior.",
+    price: "₹1,500",
+    availableSizes: ["1 Dozen"],
+    image: "/images/himayath_mango.jpg",
+    category: "Fruits",
+    available: true,
+    healthBenefits: [
+      "Loaded with Vitamin C and folate",
+      "Supports healthy digestion",
+      "Rich in beta-carotene for eye health"
+    ],
+    growingMethods: "Nurtured on our oldest estate trees, requiring precise pruning and watering schedules to achieve their massive size and perfect flavor profile."
+  },
+  {
     id: "mosambi",
     name: "Fresh Mosambi (Sweet Lime)",
     shortDescription: "Juicy, farm-fresh sweet limes perfect for juicing.",
     description: "Grown with care in nutrient-rich soil, our Mosambi is packed with vitamin C and offers a perfectly balanced sweet and tangy flavor profile.",
     price: "₹150",
     availableSizes: ["1 kg", "3 kg"],
-    image: "/images/mosambi.jpg",
+    image: "/images/mosambi2.jpg",
     category: "Fruits",
     available: true,
     healthBenefits: [
@@ -63,23 +97,6 @@ export const products: Product[] = [
       "Improves brain function and blood sugar control"
     ],
     growingMethods: "Grown on traditional support trees under natural forest canopy, hand-harvested when fully mature, and strictly sun-dried."
-  },
-  {
-    id: "sandalwood",
-    name: "Indian Sandalwood Heartwood",
-    shortDescription: "Authentic, fragrant sandalwood sourced directly from our estate.",
-    description: "Our premium sandalwood is ethically grown and processed. Known for its rich, calming aroma, perfect for spiritual, cosmetic, or therapeutic use.",
-    price: "Enquire for Price",
-    availableSizes: ["Custom"],
-    image: "/images/sandalwood.jpg",
-    category: "Wood",
-    available: true,
-    healthBenefits: [
-      "Relaxes the central nervous system",
-      "Contains anti-aging and skin-soothing properties",
-      "Used in aromatherapy for mental clarity"
-    ],
-    growingMethods: "Carefully monitored over decades, grown alongside host plants to ensure proper nutrient absorption and optimal heartwood formation."
   },
   {
     id: "moringa",
