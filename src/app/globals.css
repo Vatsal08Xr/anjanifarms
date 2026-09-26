@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --color-offwhite: #FAF9F6;
+  --color-forest: #2C4C3B;
+  --color-forest-light: #3D6450;
+  --color-charcoal: #1A1A1A;
+  --color-charcoal-light: #333333;
+  --color-earthy: #8B5A2B;
+  --color-softgreen: #E9EFE6;
+  --color-lightbrown: #F4EFEA;
+}
+
+@theme inline {
+  --color-offwhite: var(--color-offwhite);
+  --color-forest: var(--color-forest);
+  --color-forest-light: var(--color-forest-light);
+  --color-charcoal: var(--color-charcoal);
+  --color-charcoal-light: var(--color-charcoal-light);
+  --color-earthy: var(--color-earthy);
+  --color-softgreen: var(--color-softgreen);
+  --color-lightbrown: var(--color-lightbrown);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+}
+
+body {
+  background: var(--color-offwhite);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Custom scrollbar to look premium */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-offwhite);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-forest);
+  border-radius: 4px;
+}
+
+/* Hide scrollbar when not hovering (optional) */
+/* Reset utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
