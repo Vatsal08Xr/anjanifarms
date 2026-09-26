@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { Menu, X, ShoppingBag, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 const links = [
   { name: "Home", href: "/" },
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const { cartCount } = useCart();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,6 +77,19 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-4">
             <Link
+              href={user ? "/account" : "/login"}
+              className={cn(
+                "relative flex items-center justify-center w-10 h-10 rounded-full transition-colors",
+                useLightText 
+                  ? "bg-offwhite/10 hover:bg-offwhite/20 text-offwhite" 
+                  : "bg-forest/5 hover:bg-forest/10 text-forest"
+              )}
+              aria-label="Account"
+            >
+              <User size={20} />
+            </Link>
+            
+            <Link
               href="/cart"
               className={cn(
                 "relative flex items-center justify-center w-10 h-10 rounded-full transition-colors",
@@ -95,6 +110,12 @@ export default function Navbar() {
 
           {/* Mobile Toggle & Cart */}
           <div className="md:hidden flex items-center gap-4 z-50">
+            <Link
+              href={user ? "/account" : "/login"}
+              className={cn("relative transition-colors", useLightText ? "text-offwhite" : "text-forest")}
+            >
+              <User size={24} />
+            </Link>
             <Link
               href="/cart"
               className={cn("relative transition-colors", useLightText ? "text-offwhite" : "text-forest")}

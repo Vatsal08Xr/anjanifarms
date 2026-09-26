@@ -1,12 +1,16 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Trash2, ArrowRight } from "lucide-react";
 
 export default function CartPage() {
   const { cart, removeFromCart, cartCount } = useCart();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const subtotal = cart.reduce((total, item) => {
     const priceNum = parseInt(item.product.price.replace(/[^\d]/g, ''), 10) || 0;
@@ -83,7 +87,17 @@ export default function CartPage() {
                   <span className="font-serif text-xl text-charcoal">Total</span>
                   <span className="font-serif text-2xl font-semibold text-forest">₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
-                <button className="w-full flex items-center justify-center gap-2 bg-forest text-offwhite px-8 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors">
+                <button 
+                  onClick={() => {
+                    if (user) {
+                      // Proceed to actual checkout stripe/razorpay etc
+                      alert("Proceeding to payment gateway...");
+                    } else {
+                      router.push("/login");
+                    }
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-forest text-offwhite px-8 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors"
+                >
                   Checkout <ArrowRight size={18} />
                 </button>
               </div>
