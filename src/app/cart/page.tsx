@@ -8,6 +8,11 @@ import { Trash2, ArrowRight } from "lucide-react";
 export default function CartPage() {
   const { cart, removeFromCart, cartCount } = useCart();
 
+  const subtotal = cart.reduce((total, item) => {
+    const priceNum = parseInt(item.product.price.replace(/[^\d]/g, ''), 10) || 0;
+    return total + priceNum * item.quantity;
+  }, 0);
+
   return (
     <div className="pt-32 pb-24 bg-offwhite min-h-screen">
       <div className="container mx-auto px-6 md:px-12 max-w-5xl">
@@ -65,15 +70,19 @@ export default function CartPage() {
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-2xl border border-charcoal/10 sticky top-32">
                 <h3 className="font-serif text-2xl text-forest mb-6">Order Summary</h3>
-                <div className="flex justify-between mb-4 text-charcoal-light">
-                  <span>Items ({cartCount})</span>
-                  <span>Calculated at checkout</span>
+                <div className="flex justify-between items-center mb-4 text-charcoal-light">
+                  <span>Subtotal ({cartCount})</span>
+                  <span className="font-semibold text-charcoal">₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
-                <div className="flex justify-between mb-8 text-charcoal-light">
-                  <span>Shipping</span>
-                  <span>Calculated at checkout</span>
+                <div className="flex justify-between items-start mb-6 text-charcoal-light text-sm">
+                  <span className="mt-1">Shipping</span>
+                  <span className="text-right">Calculated<br/>at checkout</span>
                 </div>
-                <hr className="border-charcoal/10 mb-8" />
+                <hr className="border-charcoal/10 mb-6" />
+                <div className="flex justify-between items-center mb-8">
+                  <span className="font-serif text-xl text-charcoal">Total</span>
+                  <span className="font-serif text-2xl font-semibold text-forest">₹{subtotal.toLocaleString('en-IN')}</span>
+                </div>
                 <button className="w-full flex items-center justify-center gap-2 bg-forest text-offwhite px-8 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors">
                   Checkout <ArrowRight size={18} />
                 </button>
