@@ -16,6 +16,7 @@ interface ProductModalProps {
 
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { addToCart } = useCart();
 
@@ -23,6 +24,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
   useEffect(() => {
     if (isOpen) {
       setIsFullScreen(false);
+      setQuantity(1);
       if (scrollRef.current) {
         scrollRef.current.scrollTop = 0;
       }
@@ -179,20 +181,40 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
 
               {/* Fixed Bottom CTA */}
               <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-6 bg-offwhite border-t border-charcoal/10 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-                <div className="max-w-4xl mx-auto flex items-center justify-between">
-                  <div>
+                <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+                  <div className="hidden sm:block">
                     <p className="text-sm text-charcoal-light font-medium">Total</p>
-                    <p className="font-serif text-xl font-semibold text-forest">{product.price}</p>
+                    <p className="font-serif text-xl font-semibold text-forest">
+                      {parseInt(product.price.replace(/[^\d]/g, ''), 10) > 0 
+                        ? `₹${(parseInt(product.price.replace(/[^\d]/g, ''), 10) * quantity).toLocaleString('en-IN')}` 
+                        : product.price}
+                    </p>
                   </div>
-                  <button 
-                    onClick={() => {
-                      addToCart(product);
-                      onClose();
-                    }}
-                    className="bg-forest text-offwhite px-8 md:px-12 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors"
-                  >
-                    Add to Cart
-                  </button>
+                  
+                  <div className="flex items-center gap-3 sm:gap-6 w-full sm:w-auto justify-between sm:justify-end">
+                    <div className="flex items-center border border-charcoal/20 bg-white h-12 md:h-14 rounded-full overflow-hidden shrink-0">
+                      <button 
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))} 
+                        className="w-10 md:w-12 h-full flex items-center justify-center text-charcoal-light hover:bg-charcoal/5 transition-colors text-lg"
+                      >
+                        -
+                      </button>
+                      <span className="w-8 md:w-10 text-center font-medium text-sm md:text-base">{quantity}</span>
+                      <button 
+                        onClick={() => setQuantity(quantity + 1)} 
+                        className="w-10 md:w-12 h-full flex items-center justify-center text-charcoal-light hover:bg-charcoal/5 transition-colors text-lg"
+                      >
+                        +
+                      </button>
+                    </div>
+                    
+                    <button 
+                      onClick={() => addToCart(product, quantity)}
+                      className="bg-forest text-offwhite px-6 md:px-12 h-12 md:h-14 uppercase tracking-widest text-xs md:text-sm font-semibold hover:bg-forest-light transition-colors whitespace-nowrap flex-grow sm:flex-grow-0"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
