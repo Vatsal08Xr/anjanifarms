@@ -8,6 +8,8 @@ export type Product = {
   image: string;
   category: string;
   available: boolean;
+  healthBenefits?: string[];
+  growingMethods?: string;
 };
 
 export const products: Product[] = [
@@ -21,6 +23,12 @@ export const products: Product[] = [
     image: "/images/mangoes.jpg",
     category: "Fruits",
     available: true,
+    healthBenefits: [
+      "Rich in Vitamin A and Vitamin C",
+      "Contains powerful antioxidants like mangiferin",
+      "Supports heart health and digestion"
+    ],
+    growingMethods: "Hand-pollinated and grown in nutrient-rich laterite soil with minimal organic intervention to preserve its natural sweetness."
   },
   {
     id: "mosambi",
@@ -32,6 +40,12 @@ export const products: Product[] = [
     image: "/images/mosambi.jpg",
     category: "Fruits",
     available: true,
+    healthBenefits: [
+      "Excellent source of Vitamin C",
+      "Helps prevent dehydration and heat stroke",
+      "Boosts immunity and aids digestion"
+    ],
+    growingMethods: "Cultivated using drip irrigation techniques and natural compost, ensuring high juice content and natural sweetness."
   },
   {
     id: "pepper",
@@ -43,6 +57,12 @@ export const products: Product[] = [
     image: "/images/pepper.jpg",
     category: "Spices",
     available: true,
+    healthBenefits: [
+      "High in antioxidants and piperine",
+      "Possesses anti-inflammatory properties",
+      "Improves brain function and blood sugar control"
+    ],
+    growingMethods: "Grown on traditional support trees under natural forest canopy, hand-harvested when fully mature, and strictly sun-dried."
   },
   {
     id: "sandalwood",
@@ -54,6 +74,12 @@ export const products: Product[] = [
     image: "/images/sandalwood.jpg",
     category: "Wood",
     available: true,
+    healthBenefits: [
+      "Relaxes the central nervous system",
+      "Contains anti-aging and skin-soothing properties",
+      "Used in aromatherapy for mental clarity"
+    ],
+    growingMethods: "Carefully monitored over decades, grown alongside host plants to ensure proper nutrient absorption and optimal heartwood formation."
   },
   {
     id: "moringa",
@@ -65,5 +91,11 @@ export const products: Product[] = [
     image: "/images/moringa.jpg",
     category: "Superfoods",
     available: true,
+    healthBenefits: [
+      "Packed with vitamins A, C, and E",
+      "Reduces inflammation and lowers blood sugar",
+      "Protects and nourishes skin and hair"
+    ],
+    growingMethods: "Leaves are hand-harvested from mature trees, meticulously washed, and shade-dried to retain maximum nutritional value and vibrant color."
   },
 ];
