@@ -36,10 +36,9 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
-    if (scrollTop > 50 && !isFullScreen) {
+    // Switch to fullscreen on scroll, but never switch back as requested
+    if (scrollTop > 10 && !isFullScreen) {
       setIsFullScreen(true);
-    } else if (scrollTop <= 10 && isFullScreen) {
-      setIsFullScreen(false);
     }
   };
 
@@ -58,19 +57,22 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
           />
           
           <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: isFullScreen ? "0%" : "5%" }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[70] flex justify-center pointer-events-none"
+            initial={{ y: "100%", top: "5%" }}
+            animate={{ y: "0%", top: isFullScreen ? "0%" : "5%" }}
+            exit={{ y: "100%", top: "5%" }}
+            transition={{ 
+              y: { type: "spring", damping: 25, stiffness: 200 },
+              top: { duration: 0.4, ease: "easeOut" }
+            }}
+            className="fixed bottom-0 left-0 right-0 z-[70] flex justify-center pointer-events-none"
           >
             <div 
-              className={`w-full bg-offwhite shadow-2xl pointer-events-auto flex flex-col transition-all duration-300 ${
-                isFullScreen ? "rounded-none" : "rounded-t-3xl sm:rounded-t-[40px] max-w-5xl"
+              className={`w-full bg-offwhite shadow-2xl pointer-events-auto flex flex-col h-full mx-auto transition-[max-width,border-radius] duration-500 ${
+                isFullScreen ? "rounded-none max-w-full" : "rounded-t-3xl sm:rounded-t-[40px] max-w-5xl"
               }`}
             >
               {/* Drag Handle & Close Button */}
-              <div className="relative flex justify-center items-center p-4 border-b border-charcoal/10 bg-offwhite shrink-0 z-10">
+              <div className="relative flex justify-center items-center p-4 border-b border-charcoal/10 bg-offwhite shrink-0 z-10 transition-all duration-500">
                 {!isFullScreen && (
                   <div className="w-12 h-1.5 bg-charcoal/20 rounded-full absolute top-3" />
                 )}
