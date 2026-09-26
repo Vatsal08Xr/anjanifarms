@@ -57,6 +57,8 @@ export default function LoginPage() {
       const { auth } = await import("@/lib/firebase");
       const { RecaptchaVerifier } = await import("firebase/auth");
       
+      if (!auth) throw new Error("Firebase auth not initialized");
+
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         size: 'invisible',
       });
@@ -74,6 +76,8 @@ export default function LoginPage() {
       const { auth } = await import("@/lib/firebase");
       const { signInWithPhoneNumber } = await import("firebase/auth");
       
+      if (!auth) throw new Error("Firebase auth not initialized");
+
       const formattedPhone = `+91${phoneNumber}`;
       const appVerifier = window.recaptchaVerifier;
       
