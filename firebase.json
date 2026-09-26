@@ -1,0 +1,15 @@
+{
+  "auth": {
+    "providers": {
+      "anonymous": false,
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Anjani Farms",
+        "supportEmail": "support@anjanifarms.com",
+        "authorizedRedirectUris": [
+          "http://localhost:3000/__/auth/handler"
+        ]
+      }
+    }
+  }
+}

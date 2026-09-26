@@ -1,17 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { User } from "firebase/auth";
+import { ConfirmationResult } from "firebase/auth";
+
+declare global {
+  interface Window {
+    recaptchaVerifier: any;
+  }
+}
 
 export default function LoginPage() {
   const [method, setMethod] = useState<"options" | "phone" | "email">("options");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"input" | "verify">("input");
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [isSending, setIsSending] = useState(false);
   
-  const { user, setMockUser } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   // If already logged in, redirect to home or cart
@@ -20,31 +28,83 @@ export default function LoginPage() {
     return null;
   }
 
-  // Simulated login for demo purposes until Firebase keys are provided
-  const handleMockLogin = (type: "google" | "phone" | "email") => {
-    // We mock a Firebase User object
-    const mockFirebaseUser = {
-      uid: "mock-uid-123",
-      email: type === "email" || type === "google" ? "user@example.com" : null,
-      phoneNumber: type === "phone" ? "+919876543210" : null,
-      displayName: type === "google" ? "Anjani Shopper" : null,
-    } as unknown as User;
-    
-    setMockUser(mockFirebaseUser);
-    router.push("/cart");
-  };
-
-  const handlePhoneSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (phoneNumber.length > 9) {
-      setStep("verify");
+  const handleGoogleLogin = async () => {
+    try {
+      const { auth } = await import("@/lib/firebase");
+      if (!auth) throw new Error("Firebase auth not initialized");
+      
+      const { GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push("/cart");
+    } catch (error) {
+      console.error("Google sign in error", error);
+      alert("Failed to sign in with Google. Please try again.");
     }
   };
 
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Cleanup function
+    return () => {
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+      }
+    };
+  }, []);
+
+  const setupRecaptcha = async () => {
+    if (!window.recaptchaVerifier) {
+      const { auth } = await import("@/lib/firebase");
+      const { RecaptchaVerifier } = await import("firebase/auth");
+      
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+      });
+    }
+  };
+
+  const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp.length === 6) {
-      handleMockLogin("phone");
+    if (phoneNumber.length < 10) return;
+    
+    try {
+      setIsSending(true);
+      await setupRecaptcha();
+      
+      const { auth } = await import("@/lib/firebase");
+      const { signInWithPhoneNumber } = await import("firebase/auth");
+      
+      const formattedPhone = `+91${phoneNumber}`;
+      const appVerifier = window.recaptchaVerifier;
+      
+      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+      setConfirmationResult(confirmation);
+      setStep("verify");
+    } catch (error) {
+      console.error("SMS sending error", error);
+      alert("Failed to send SMS. Please try again.");
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp.length === 6 && confirmationResult) {
+      try {
+        setIsSending(true);
+        await confirmationResult.confirm(otp);
+        router.push("/cart");
+      } catch (error) {
+        console.error("OTP Verification Error", error);
+        alert("Invalid OTP. Please try again.");
+      } finally {
+        setIsSending(false);
+      }
     }
   };
 
@@ -61,7 +121,7 @@ export default function LoginPage() {
         {method === "options" && (
           <div className="space-y-4">
             <button 
-              onClick={() => handleMockLogin("google")}
+              onClick={handleGoogleLogin}
               className="w-full flex items-center justify-center gap-3 border border-charcoal/20 py-3 rounded-full hover:bg-charcoal/5 transition-colors font-medium text-charcoal"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -79,7 +139,7 @@ export default function LoginPage() {
               Continue with Phone Number
             </button>
             <button 
-              onClick={() => handleMockLogin("email")}
+              onClick={() => alert("Email login UI coming soon!")}
               className="w-full flex items-center justify-center gap-3 border border-charcoal/20 py-3 rounded-full hover:bg-charcoal/5 transition-colors font-medium text-charcoal"
             >
               Continue with Email
@@ -89,6 +149,7 @@ export default function LoginPage() {
 
         {method === "phone" && step === "input" && (
           <form onSubmit={handlePhoneSubmit} className="space-y-6">
+            <div id="recaptcha-container"></div>
             <div>
               <label className="block text-sm font-medium text-charcoal-light mb-2">Mobile Number</label>
               <div className="flex">
@@ -102,14 +163,16 @@ export default function LoginPage() {
                   onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
                   className="w-full border border-charcoal/20 px-4 py-3 rounded-r-md focus:outline-none focus:border-forest transition-colors"
                   placeholder="Enter your number"
+                  disabled={isSending}
                 />
               </div>
             </div>
             <button 
               type="submit"
-              className="w-full bg-forest text-offwhite py-3 rounded-full hover:bg-forest-light transition-colors font-semibold tracking-wide uppercase text-sm"
+              disabled={isSending}
+              className="w-full bg-forest text-offwhite py-3 rounded-full hover:bg-forest-light transition-colors font-semibold tracking-wide uppercase text-sm disabled:opacity-50"
             >
-              Send OTP
+              {isSending ? "Sending..." : "Send OTP"}
             </button>
             <button 
               type="button"
@@ -135,13 +198,15 @@ export default function LoginPage() {
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 className="w-full border border-charcoal/20 px-4 py-3 rounded-md focus:outline-none focus:border-forest transition-colors text-center text-xl tracking-[0.5em]"
                 placeholder="------"
+                disabled={isSending}
               />
             </div>
             <button 
               type="submit"
-              className="w-full bg-forest text-offwhite py-3 rounded-full hover:bg-forest-light transition-colors font-semibold tracking-wide uppercase text-sm"
+              disabled={isSending}
+              className="w-full bg-forest text-offwhite py-3 rounded-full hover:bg-forest-light transition-colors font-semibold tracking-wide uppercase text-sm disabled:opacity-50"
             >
-              Verify & Login
+              {isSending ? "Verifying..." : "Verify & Login"}
             </button>
             <button 
               type="button"

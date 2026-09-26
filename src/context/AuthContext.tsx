@@ -8,8 +8,6 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
-  // For demo purposes when Firebase is not yet configured
-  setMockUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,12 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const setMockUser = (mockUser: User | null) => {
-    setUser(mockUser);
-  };
-
   return (
-    <AuthContext.Provider value={{ user, loading, signOut, setMockUser }}>
+    <AuthContext.Provider value={{ user, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );
