@@ -7,6 +7,7 @@ import Image from "next/image";
 import { type Product } from "@/data/products";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
 
 interface ProductModalProps {
   product: Product | null;
@@ -16,15 +17,20 @@ interface ProductModalProps {
 
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [localQuantity, setLocalQuantity] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { addToCart } = useCart();
+  const { cart, addToCart, updateQuantity } = useCart();
+  const router = useRouter();
+
+  const cartItem = product ? cart.find((item) => item.product.id === product.id) : undefined;
+  const isAdded = !!cartItem;
+  const displayQuantity = isAdded ? cartItem.quantity : localQuantity;
 
   // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
       setIsFullScreen(false);
-      setQuantity(1);
+      setLocalQuantity(1);
       if (scrollRef.current) {
         scrollRef.current.scrollTop = 0;
       }
@@ -186,7 +192,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                     <p className="text-sm text-charcoal-light font-medium">Total</p>
                     <p className="font-serif text-xl font-semibold text-forest">
                       {parseInt(product.price.replace(/[^\d]/g, ''), 10) > 0 
-                        ? `₹${(parseInt(product.price.replace(/[^\d]/g, ''), 10) * quantity).toLocaleString('en-IN')}` 
+                        ? `₹${(parseInt(product.price.replace(/[^\d]/g, ''), 10) * displayQuantity).toLocaleString('en-IN')}` 
                         : product.price}
                     </p>
                   </div>
@@ -194,14 +200,26 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                   <div className="flex items-center gap-3 sm:gap-6 w-full sm:w-auto justify-between sm:justify-end">
                     <div className="flex items-center border border-charcoal/20 bg-white h-12 md:h-14 rounded-full overflow-hidden shrink-0">
                       <button 
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))} 
+                        onClick={() => {
+                          if (isAdded) {
+                            updateQuantity(product.id, displayQuantity - 1);
+                          } else {
+                            setLocalQuantity(Math.max(1, localQuantity - 1));
+                          }
+                        }} 
                         className="w-10 md:w-12 h-full flex items-center justify-center text-charcoal-light hover:bg-charcoal/5 transition-colors text-lg"
                       >
                         -
                       </button>
-                      <span className="w-8 md:w-10 text-center font-medium text-sm md:text-base">{quantity}</span>
+                      <span className="w-8 md:w-10 text-center font-medium text-sm md:text-base">{displayQuantity}</span>
                       <button 
-                        onClick={() => setQuantity(quantity + 1)} 
+                        onClick={() => {
+                          if (isAdded) {
+                            updateQuantity(product.id, displayQuantity + 1);
+                          } else {
+                            setLocalQuantity(localQuantity + 1);
+                          }
+                        }} 
                         className="w-10 md:w-12 h-full flex items-center justify-center text-charcoal-light hover:bg-charcoal/5 transition-colors text-lg"
                       >
                         +
@@ -209,10 +227,17 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                     </div>
                     
                     <button 
-                      onClick={() => addToCart(product, quantity)}
+                      onClick={() => {
+                        if (isAdded) {
+                          onClose();
+                          router.push('/cart');
+                        } else {
+                          addToCart(product, localQuantity);
+                        }
+                      }}
                       className="bg-forest text-offwhite px-6 md:px-12 h-12 md:h-14 uppercase tracking-widest text-xs md:text-sm font-semibold hover:bg-forest-light transition-colors whitespace-nowrap flex-grow sm:flex-grow-0"
                     >
-                      Add to Cart
+                      {isAdded ? "Go to Cart" : "Add to Cart"}
                     </button>
                   </div>
                 </div>

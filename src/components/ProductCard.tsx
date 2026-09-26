@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { type Product } from "@/data/products";
 import ProductModal from "./ProductModal";
+import { useCart } from "@/context/CartContext";
+import { Plus } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +13,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { cart, addToCart, updateQuantity } = useCart();
+  
+  const cartItem = cart.find(item => item.product.id === product.id);
 
   return (
     <>
@@ -27,8 +32,43 @@ export default function ProductCard({ product }: ProductCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           {!product.available && (
-            <div className="absolute top-4 left-4 bg-offwhite/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
+            <div className="absolute top-4 left-4 bg-offwhite/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider z-10">
               Out of Stock
+            </div>
+          )}
+          
+          {product.available && (
+            <div 
+              className="absolute top-4 right-4 z-10 transition-transform duration-300 transform translate-y-0 opacity-100 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100" 
+              onClick={(e) => e.stopPropagation()}
+            >
+              {cartItem ? (
+                <div className="flex items-center border border-charcoal/20 bg-white/95 rounded-full overflow-hidden shadow-md h-9">
+                  <button 
+                    onClick={() => updateQuantity(product.id, cartItem.quantity - 1)} 
+                    className="w-8 h-full flex items-center justify-center text-charcoal hover:bg-charcoal/5 transition-colors"
+                  >
+                    -
+                  </button>
+                  <span className="w-6 text-center text-xs font-medium text-charcoal">
+                    {cartItem.quantity}
+                  </span>
+                  <button 
+                    onClick={() => updateQuantity(product.id, cartItem.quantity + 1)} 
+                    className="w-8 h-full flex items-center justify-center text-charcoal hover:bg-charcoal/5 transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => addToCart(product, 1)} 
+                  className="w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all text-charcoal hover:scale-105"
+                  aria-label="Add to cart"
+                >
+                  <Plus size={18} />
+                </button>
+              )}
             </div>
           )}
         </div>
