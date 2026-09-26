@@ -176,7 +176,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               </div>
 
               {/* Fixed Bottom CTA */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-offwhite border-t border-charcoal/10 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+              <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-6 bg-offwhite border-t border-charcoal/10 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
                   <div>
                     <p className="text-sm text-charcoal-light font-medium">Total</p>
