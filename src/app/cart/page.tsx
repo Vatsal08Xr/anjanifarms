@@ -18,29 +18,29 @@ export default function CartPage() {
   }, 0);
 
   return (
-    <div className="pt-32 pb-24 bg-offwhite min-h-screen">
-      <div className="container mx-auto px-6 md:px-12 max-w-5xl">
-        <h1 className="font-serif text-4xl md:text-5xl text-forest mb-12">
+    <div className="pt-24 md:pt-32 pb-16 md:pb-24 bg-offwhite min-h-screen">
+      <div className="container mx-auto px-4 md:px-12 max-w-5xl">
+        <h1 className="font-serif text-3xl md:text-5xl text-forest mb-8 md:mb-12">
           Your Cart
         </h1>
 
         {cart.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-charcoal/10">
-            <h2 className="font-serif text-2xl text-charcoal mb-4">Your cart is empty</h2>
-            <p className="text-charcoal-light mb-8">Looks like you haven't added anything from our farm yet.</p>
+          <div className="text-center py-12 md:py-20 bg-white rounded-xl md:rounded-2xl border border-charcoal/10 px-4">
+            <h2 className="font-serif text-xl md:text-2xl text-charcoal mb-3 md:mb-4">Your cart is empty</h2>
+            <p className="text-charcoal-light text-sm md:text-base mb-6 md:mb-8">Looks like you haven't added anything from our farm yet.</p>
             <Link 
               href="/shop"
-              className="inline-block bg-forest text-offwhite px-8 py-3 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors"
+              className="inline-block bg-forest text-offwhite px-6 md:px-8 py-2.5 md:py-3 uppercase tracking-widest text-xs md:text-sm font-semibold hover:bg-forest-light transition-colors rounded-none"
             >
               Back to Shop
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+            <div className="lg:col-span-2 space-y-4 md:space-y-6">
               {cart.map((item) => (
-                <div key={item.product.id} className="flex flex-col sm:flex-row gap-6 bg-white p-6 rounded-2xl border border-charcoal/10 items-center">
-                  <div className="relative w-full sm:w-32 aspect-square rounded-xl overflow-hidden bg-lightbrown shrink-0">
+                <div key={item.product.id} className="flex flex-row gap-4 md:gap-6 bg-white p-4 md:p-6 rounded-xl md:rounded-2xl border border-charcoal/10 items-center relative">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-lg md:rounded-xl overflow-hidden bg-lightbrown shrink-0">
                     <Image
                       src={item.product.image}
                       alt={item.product.name}
@@ -48,23 +48,24 @@ export default function CartPage() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="flex-grow text-center sm:text-left">
-                    <p className="text-xs font-semibold text-earthy uppercase tracking-widest mb-1">
+                  <div className="flex-grow text-left">
+                    <p className="text-[10px] md:text-xs font-semibold text-earthy uppercase tracking-widest mb-1">
                       {item.product.category}
                     </p>
-                    <h3 className="font-serif text-xl text-forest mb-2">
+                    <h3 className="font-serif text-sm md:text-xl text-forest mb-1 md:mb-2 line-clamp-2 pr-8">
                       {item.product.name}
                     </h3>
-                    <p className="text-charcoal-light mb-4">Qty: {item.quantity}</p>
+                    <p className="text-charcoal-light text-xs md:text-base mb-2 md:mb-4">Qty: {item.quantity}</p>
+                    <p className="font-serif text-sm md:text-lg hidden sm:block">{item.product.price}</p>
                   </div>
-                  <div className="flex flex-col items-center sm:items-end gap-4 shrink-0">
-                    <p className="font-serif text-lg">{item.product.price}</p>
+                  <div className="flex flex-col items-end gap-2 md:gap-4 shrink-0 absolute top-4 right-4 sm:static">
+                    <p className="font-serif text-sm md:text-lg sm:hidden">{item.product.price}</p>
                     <button 
                       onClick={() => removeFromCart(item.product.id)}
-                      className="text-earthy hover:text-red-700 transition-colors p-2"
+                      className="text-earthy hover:text-red-700 transition-colors p-1 md:p-2"
                       aria-label="Remove item"
                     >
-                      <Trash2 size={20} />
+                      <Trash2 size={18} className="md:w-5 md:h-5" />
                     </button>
                   </div>
                 </div>
@@ -72,20 +73,20 @@ export default function CartPage() {
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-white p-8 rounded-2xl border border-charcoal/10 sticky top-32">
-                <h3 className="font-serif text-2xl text-forest mb-6">Order Summary</h3>
-                <div className="flex justify-between items-center mb-4 text-charcoal-light">
+              <div className="bg-white p-6 md:p-8 rounded-xl md:rounded-2xl border border-charcoal/10 sticky top-24 md:top-32">
+                <h3 className="font-serif text-xl md:text-2xl text-forest mb-4 md:mb-6">Order Summary</h3>
+                <div className="flex justify-between items-center mb-3 md:mb-4 text-charcoal-light text-sm md:text-base">
                   <span>Subtotal ({cartCount})</span>
                   <span className="font-semibold text-charcoal">₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
-                <div className="flex justify-between items-start mb-6 text-charcoal-light text-sm">
+                <div className="flex justify-between items-start mb-4 md:mb-6 text-charcoal-light text-xs md:text-sm">
                   <span className="mt-1">Shipping</span>
                   <span className="text-right">Calculated<br/>at checkout</span>
                 </div>
-                <hr className="border-charcoal/10 mb-6" />
-                <div className="flex justify-between items-center mb-8">
-                  <span className="font-serif text-xl text-charcoal">Total</span>
-                  <span className="font-serif text-2xl font-semibold text-forest">₹{subtotal.toLocaleString('en-IN')}</span>
+                <hr className="border-charcoal/10 mb-4 md:mb-6" />
+                <div className="flex justify-between items-center mb-6 md:mb-8">
+                  <span className="font-serif text-lg md:text-xl text-charcoal">Total</span>
+                  <span className="font-serif text-xl md:text-2xl font-semibold text-forest">₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
                 <button 
                   onClick={() => {
@@ -96,9 +97,9 @@ export default function CartPage() {
                       router.push("/login");
                     }
                   }}
-                  className="w-full flex items-center justify-center gap-2 bg-forest text-offwhite px-8 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-forest-light transition-colors"
+                  className="w-full flex items-center justify-center gap-2 bg-forest text-offwhite px-6 md:px-8 py-3 md:py-4 uppercase tracking-widest text-xs md:text-sm font-semibold hover:bg-forest-light transition-colors rounded-full md:rounded-none"
                 >
-                  Checkout <ArrowRight size={18} />
+                  Checkout <ArrowRight size={16} className="md:w-4 md:h-4" />
                 </button>
               </div>
             </div>
