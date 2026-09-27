@@ -5,8 +5,9 @@ import { ChevronLeft } from "lucide-react";
 import { blogs } from "@/data/blogs";
 import { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const blog = blogs.find((b) => b.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const blog = blogs.find((b) => b.slug === resolvedParams.slug);
   if (!blog) return { title: "Blog Not Found" };
   return {
     title: `${blog.title} | Anjani Farms`,
@@ -21,8 +22,9 @@ export function generateStaticParams() {
   }));
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const blog = blogs.find((b) => b.slug === params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const blog = blogs.find((b) => b.slug === resolvedParams.slug);
 
   if (!blog) {
     notFound();

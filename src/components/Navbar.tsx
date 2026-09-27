@@ -15,7 +15,6 @@ const links = [
   { name: "Our Farm", href: "/our-farm" },
   { name: "Why Anjani", href: "/why-anjani" },
   { name: "Blog", href: "/blog" },
-  { name: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
