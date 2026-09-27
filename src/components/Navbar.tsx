@@ -46,13 +46,28 @@ export default function Navbar() {
         className={cn(
           "fixed top-0 w-full z-50 transition-all duration-300",
           scrolled
-            ? "bg-offwhite/90 backdrop-blur-md py-4 shadow-sm"
-            : "bg-transparent py-6"
+            ? "bg-offwhite/90 backdrop-blur-md py-3 md:py-4 shadow-sm"
+            : "bg-transparent py-4 md:py-6"
         )}
       >
-        <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-          <Link href="/" className="z-50">
-            <h1 className={cn("font-serif text-2xl font-bold tracking-wider transition-colors", useLightText ? "text-offwhite" : "text-forest")}>
+        <div className="container mx-auto px-4 md:px-12 flex items-center justify-between">
+          {/* Mobile: Hamburger left */}
+          <div className="md:hidden flex items-center z-50">
+            <button
+              className={cn("transition-colors p-1", useLightText ? "text-offwhite" : "text-forest")}
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={26} /> : <Menu size={26} />}
+            </button>
+          </div>
+
+          {/* Logo - centered on mobile, left on desktop */}
+          <Link href="/" className="z-50 md:order-first">
+            <h1 className={cn(
+              "font-serif text-lg md:text-2xl font-bold tracking-wider transition-colors",
+              useLightText ? "text-offwhite" : "text-forest"
+            )}>
               ANJANI FARMS
             </h1>
           </Link>
@@ -75,6 +90,7 @@ export default function Navbar() {
             ))}
           </nav>
 
+          {/* Desktop icons */}
           <div className="hidden md:flex items-center gap-4">
             <Link
               href={user ? "/account" : "/login"}
@@ -108,32 +124,25 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Toggle & Cart */}
-          <div className="md:hidden flex items-center gap-4 z-50">
+          {/* Mobile: User & Cart icons right */}
+          <div className="md:hidden flex items-center gap-3 z-50">
             <Link
               href={user ? "/account" : "/login"}
-              className={cn("relative transition-colors", useLightText ? "text-offwhite" : "text-forest")}
+              className={cn("relative transition-colors p-1", useLightText ? "text-offwhite" : "text-forest")}
             >
-              <User size={24} />
+              <User size={22} />
             </Link>
             <Link
               href="/cart"
-              className={cn("relative transition-colors", useLightText ? "text-offwhite" : "text-forest")}
+              className={cn("relative transition-colors p-1", useLightText ? "text-offwhite" : "text-forest")}
             >
-              <ShoppingBag size={24} />
+              <ShoppingBag size={22} />
               {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-earthy text-offwhite text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-earthy text-offwhite text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
             </Link>
-            <button
-              className={cn("transition-colors", useLightText ? "text-offwhite" : "text-forest")}
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
           </div>
         </div>
       </header>
@@ -154,7 +163,7 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "font-serif text-4xl transition-colors",
+                    "font-serif text-3xl transition-colors",
                     pathname === link.href ? "text-forest" : "text-charcoal"
                   )}
                 >

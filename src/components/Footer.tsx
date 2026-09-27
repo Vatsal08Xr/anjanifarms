@@ -3,9 +3,9 @@ import { MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-forest text-offwhite py-16 mt-20">
-      <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-4 gap-12">
-        <div className="md:col-span-1">
+    <footer className="bg-forest text-offwhite py-10 md:py-16 mt-12 md:mt-20">
+      <div className="container mx-auto px-4 md:px-12 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="col-span-2 md:col-span-1">
           <h2 className="font-serif text-2xl font-bold tracking-widest mb-6">
             ANJANI FARMS
           </h2>
@@ -60,7 +60,7 @@ export default function Footer() {
         </div>
       </div>
       
-      <div className="container mx-auto px-6 md:px-12 mt-16 pt-8 border-t border-offwhite/20 text-center md:text-left text-xs text-offwhite/60 flex flex-col md:flex-row justify-between">
+      <div className="container mx-auto px-4 md:px-12 mt-8 md:mt-16 pt-6 md:pt-8 border-t border-offwhite/20 text-center md:text-left text-xs text-offwhite/60 flex flex-col md:flex-row justify-between">
         <p>&copy; {new Date().getFullYear()} Anjani Farms. All rights reserved.</p>
         <div className="mt-4 md:mt-0 space-x-4">
           <Link href="#" className="hover:text-offwhite">Privacy Policy</Link>
