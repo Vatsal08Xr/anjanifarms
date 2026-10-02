@@ -6,9 +6,13 @@ export default function Footer() {
     <footer className="bg-forest text-offwhite py-10 md:py-16 mt-12 md:mt-20">
       <div className="container mx-auto px-4 md:px-12 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
         <div className="col-span-2 md:col-span-1">
-          <h2 className="font-serif text-2xl font-bold tracking-widest mb-6">
-            ANJANI FARMS
-          </h2>
+          <Link href="/">
+            <img 
+              src="/logo.png" 
+              alt="Anjani Farms" 
+              className="h-12 w-auto object-contain mb-6 brightness-0 invert" 
+            />
+          </Link>
           <p className="text-offwhite/80 text-sm leading-relaxed">
             From our farm to your home. Premium quality, carefully cultivated, and freshly harvested.
           </p>
@@ -56,8 +60,8 @@ export default function Footer() {
         <div>
           <h3 className="font-serif text-xl mb-6">Connect</h3>
           <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 rounded-full bg-offwhite/10 flex items-center justify-center hover:bg-offwhite/20 transition-colors">
-              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="css-i6dzq1"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <a href="https://www.instagram.com/anjanifarmsofficial" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-offwhite/10 flex items-center justify-center hover:bg-offwhite/20 transition-colors">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             </a>
           </div>
         </div>

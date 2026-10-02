@@ -63,13 +63,12 @@ export default function Navbar() {
           </div>
 
           {/* Logo - centered on mobile, left on desktop */}
-          <Link href="/" className="z-50 md:order-first">
-            <h1 className={cn(
-              "font-serif text-lg md:text-2xl font-bold tracking-wider transition-colors",
-              useLightText ? "text-offwhite" : "text-forest"
-            )}>
-              ANJANI FARMS
-            </h1>
+          <Link href="/" className="z-50 md:order-first flex items-center justify-center">
+            <img 
+              src="/logo.png" 
+              alt="Anjani Farms" 
+              className={cn("h-8 md:h-12 w-auto object-contain transition-all", useLightText ? "brightness-0 invert" : "")} 
+            />
           </Link>
 
           {/* Desktop Nav */}
