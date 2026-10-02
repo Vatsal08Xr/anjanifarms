@@ -3,7 +3,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { 
   User, 
   Package, 
@@ -12,18 +12,31 @@ import {
   LogOut, 
   ChevronRight, 
   CheckCircle2, 
-  Clock, 
-  Truck 
+  Clock 
 } from "lucide-react";
 
 export default function AccountPage() {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("orders");
+  
+  const [profileForm, setProfileForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: ""
+  });
 
   useEffect(() => {
     if (!user) {
       router.push("/login");
+    } else {
+      // Initialize form with user data if available
+      const nameParts = (user.displayName || "").split(" ");
+      setProfileForm({
+        firstName: nameParts[0] || "",
+        lastName: nameParts.slice(1).join(" ") || "",
+        email: user.email || ""
+      });
     }
   }, [user, router]);
 
@@ -32,6 +45,16 @@ export default function AccountPage() {
   const handleSignOut = () => {
     signOut();
     router.push("/");
+  };
+
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProfileForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleProfileSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert("Profile updated successfully!");
   };
 
   return (
@@ -47,7 +70,7 @@ export default function AccountPage() {
                   <User size={32} />
                 </div>
                 <h2 className="font-serif text-xl font-semibold">
-                  {user.displayName || "Valued Customer"}
+                  {profileForm.firstName ? `${profileForm.firstName} ${profileForm.lastName}` : (user.displayName || "Valued Customer")}
                 </h2>
                 <p className="text-offwhite/80 text-sm mt-1">
                   {user.phoneNumber || user.email || "Guest"}
@@ -102,7 +125,7 @@ export default function AccountPage() {
               <div className="space-y-6">
                 <h1 className="font-serif text-2xl md:text-3xl text-forest mb-6">Order History</h1>
                 
-                {/* Mock Active Order */}
+                {/* Mock Active Order (Multiple items) */}
                 <div className="bg-white rounded-2xl border border-charcoal/10 p-6 md:p-8">
                   <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
                     <div>
@@ -113,16 +136,27 @@ export default function AccountPage() {
                       <Clock size={14} /> Processing
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 border-t border-charcoal/10 pt-6">
-                    <div className="w-16 h-16 bg-lightbrown rounded-lg shrink-0"></div>
+                  <div className="flex items-center gap-4 md:gap-6 border-t border-charcoal/10 pt-6">
+                    <div className="relative w-16 h-16 md:w-20 md:h-20 bg-lightbrown rounded-lg shrink-0 overflow-hidden shadow-sm">
+                      <Image
+                        src="/images/mangoes.jpg"
+                        alt="Alphonso Mangoes"
+                        fill
+                        className="object-cover"
+                      />
+                      {/* +n Indicator for multiple items */}
+                      <div className="absolute bottom-0 right-0 bg-charcoal/80 text-white text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded-tl-md backdrop-blur-sm">
+                        +1
+                      </div>
+                    </div>
                     <div className="flex-grow">
-                      <p className="font-serif text-lg text-charcoal">Alphonso Mango Box</p>
-                      <p className="text-sm text-charcoal-light">Qty: 2 • ₹2,400</p>
+                      <p className="font-serif text-base md:text-lg text-charcoal line-clamp-1">Alphonso Mango Box & 1 more item</p>
+                      <p className="text-sm text-charcoal-light mt-1">Total: ₹2,550</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Mock Past Order */}
+                {/* Mock Past Order (Single item) */}
                 <div className="bg-white rounded-2xl border border-charcoal/10 p-6 md:p-8">
                   <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
                     <div>
@@ -133,13 +167,20 @@ export default function AccountPage() {
                       <CheckCircle2 size={14} /> Delivered
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 border-t border-charcoal/10 pt-6">
-                    <div className="w-16 h-16 bg-lightbrown rounded-lg shrink-0"></div>
-                    <div className="flex-grow">
-                      <p className="font-serif text-lg text-charcoal">Organic Moringa Powder</p>
-                      <p className="text-sm text-charcoal-light">Qty: 1 • ₹450</p>
+                  <div className="flex items-center gap-4 md:gap-6 border-t border-charcoal/10 pt-6">
+                    <div className="relative w-16 h-16 md:w-20 md:h-20 bg-lightbrown rounded-lg shrink-0 overflow-hidden shadow-sm">
+                      <Image
+                        src="/images/moringa.jpg"
+                        alt="Moringa Powder"
+                        fill
+                        className="object-cover"
+                      />
                     </div>
-                    <button className="hidden sm:block border border-forest text-forest px-4 py-2 rounded-full text-xs uppercase tracking-widest hover:bg-forest hover:text-offwhite transition-colors">
+                    <div className="flex-grow">
+                      <p className="font-serif text-base md:text-lg text-charcoal line-clamp-1">Organic Moringa Powder</p>
+                      <p className="text-sm text-charcoal-light mt-1">Qty: 1 • ₹450</p>
+                    </div>
+                    <button className="hidden sm:block border border-forest text-forest px-4 py-2 rounded-full text-xs uppercase tracking-widest hover:bg-forest hover:text-offwhite transition-colors whitespace-nowrap">
                       Reorder
                     </button>
                   </div>
@@ -151,27 +192,53 @@ export default function AccountPage() {
             {activeTab === "profile" && (
               <div className="bg-white rounded-2xl border border-charcoal/10 p-6 md:p-8">
                 <h1 className="font-serif text-2xl md:text-3xl text-forest mb-6">Profile Information</h1>
-                <form className="space-y-6 max-w-xl">
+                <form className="space-y-6 max-w-xl" onSubmit={handleProfileSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-xs font-medium text-charcoal-light uppercase tracking-widest mb-2">First Name</label>
-                      <input type="text" className="w-full border border-charcoal/20 px-4 py-3 rounded-lg focus:outline-none focus:border-forest" placeholder="e.g. John" />
+                      <input 
+                        type="text" 
+                        name="firstName"
+                        value={profileForm.firstName}
+                        onChange={handleProfileChange}
+                        className="w-full border border-charcoal/20 px-4 py-3 rounded-lg focus:outline-none focus:border-forest transition-colors" 
+                        placeholder="e.g. John" 
+                      />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-charcoal-light uppercase tracking-widest mb-2">Last Name</label>
-                      <input type="text" className="w-full border border-charcoal/20 px-4 py-3 rounded-lg focus:outline-none focus:border-forest" placeholder="e.g. Doe" />
+                      <input 
+                        type="text" 
+                        name="lastName"
+                        value={profileForm.lastName}
+                        onChange={handleProfileChange}
+                        className="w-full border border-charcoal/20 px-4 py-3 rounded-lg focus:outline-none focus:border-forest transition-colors" 
+                        placeholder="e.g. Doe" 
+                      />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-charcoal-light uppercase tracking-widest mb-2">Phone Number</label>
-                    <input type="tel" className="w-full border border-charcoal/20 px-4 py-3 rounded-lg bg-offwhite text-charcoal cursor-not-allowed" value={user.phoneNumber || ""} disabled />
+                    <input 
+                      type="tel" 
+                      className="w-full border border-charcoal/20 px-4 py-3 rounded-lg bg-offwhite text-charcoal cursor-not-allowed" 
+                      value={user.phoneNumber || ""} 
+                      disabled 
+                    />
                     <p className="text-xs text-charcoal-light mt-1">Phone number cannot be changed directly.</p>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-charcoal-light uppercase tracking-widest mb-2">Email Address</label>
-                    <input type="email" className="w-full border border-charcoal/20 px-4 py-3 rounded-lg focus:outline-none focus:border-forest" placeholder="john@example.com" value={user.email || ""} />
+                    <input 
+                      type="email" 
+                      name="email"
+                      value={profileForm.email}
+                      onChange={handleProfileChange}
+                      className="w-full border border-charcoal/20 px-4 py-3 rounded-lg focus:outline-none focus:border-forest transition-colors" 
+                      placeholder="your@email.com" 
+                    />
                   </div>
-                  <button type="button" className="bg-forest text-offwhite px-8 py-3 rounded-full uppercase tracking-widest text-xs font-semibold hover:bg-forest-light transition-colors">
+                  <button type="submit" className="bg-forest text-offwhite px-8 py-3 rounded-full uppercase tracking-widest text-xs font-semibold hover:bg-forest-light transition-colors">
                     Save Changes
                   </button>
                 </form>
@@ -183,14 +250,14 @@ export default function AccountPage() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h1 className="font-serif text-2xl md:text-3xl text-forest">Saved Addresses</h1>
-                  <button className="bg-forest text-offwhite px-4 md:px-6 py-2 md:py-3 rounded-full uppercase tracking-widest text-xs font-semibold hover:bg-forest-light transition-colors">
+                  <button className="bg-forest text-offwhite px-4 md:px-6 py-2 md:py-3 rounded-full uppercase tracking-widest text-xs font-semibold hover:bg-forest-light transition-colors whitespace-nowrap">
                     + Add New
                   </button>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Mock Address */}
-                  <div className="bg-white rounded-2xl border border-forest p-6 relative overflow-hidden">
+                  <div className="bg-white rounded-2xl border border-forest p-6 relative overflow-hidden shadow-sm">
                     <div className="absolute top-0 right-0 bg-forest text-offwhite px-3 py-1 rounded-bl-lg text-[10px] uppercase tracking-widest font-bold">
                       Default
                     </div>
