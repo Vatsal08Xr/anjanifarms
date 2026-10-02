@@ -67,7 +67,7 @@ export default function Navbar() {
             <img 
               src="/logo.png" 
               alt="Anjani Farms" 
-              className={cn("h-10 md:h-14 w-auto object-contain transition-all", useLightText ? "brightness-0 invert" : "")} 
+              className="h-10 md:h-14 w-auto object-contain transition-all" 
             />
           </Link>
 
